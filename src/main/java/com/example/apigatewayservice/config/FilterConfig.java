@@ -8,9 +8,9 @@ import org.springframework.context.annotation.Configuration;
 /**
  * application.yml 파일에서 하던 작업을 java 코드로 구현함
  */
-@Configuration
+//@Configuration
 public class FilterConfig {
-    @Bean
+//    @Bean
     public RouteLocator gatewayRoutes(RouteLocatorBuilder builder){
         return builder.routes()
                 .route(r -> r.path("/first-service/**") // 라우터 등록
