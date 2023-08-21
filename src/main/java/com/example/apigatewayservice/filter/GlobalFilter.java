@@ -1,5 +1,6 @@
 package com.example.apigatewayservice.filter;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -9,12 +10,12 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 /**
- * custom filter는 라우터 정보가 있을 떄 그 라우터 정보마다 무조건 실행됨
+ * global filter는 어떠한 라우터 정보와 상관없이 공통적으로 사용될 수 있는 필터
  */
 @Component
 @Slf4j
-public class CustomFilter extends AbstractGatewayFilterFactory<CustomFilter.Config> {
-    public CustomFilter(){
+public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Config> {
+    public GlobalFilter(){
         super(Config.class);
     }
 
@@ -26,21 +27,28 @@ public class CustomFilter extends AbstractGatewayFilterFactory<CustomFilter.Conf
     public GatewayFilter apply(Config config) {
         // Custom pre filter
         return ((exchange, chain) -> {
-            // netty 라는 비동기식 서버를 사용해 구동시키는데 이떄는 servletRequest 대신 serverRequest를 사용함
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse response = exchange.getResponse();
 
-            log.info("Custom PRE filter : request id -> {}", request.getId());
+            log.info("Global Filter baseMessage : {}", config.getBaseMessage());
 
+            if(config.isPreLogger()){
+                log.info("Global Filter start : request id -> {}", request.getId());
+            }
             //Custom Post filter - 처리가 다 끝난 상태에서 실행
             return chain.filter(exchange).then(Mono.fromRunnable(() -> { // Mono -> 비동기 서버에서 단위값을 전달함
-                log.info("Custom POST filter : response code -> {}", response.getStatusCode());
+                if(config.isPostLogger()){
+                    log.info("Global Filter end : response code -> {}", response.getStatusCode());
+                }
             }));
         });
     }
 
 
+    @Data
     public static class Config{
-
+        private String baseMessage;
+        private boolean preLogger;
+        private boolean postLogger;
     }
 }
