@@ -21,6 +21,10 @@ spring:
             preLogger: true
             postLogger: true
       routes:
+        - id: user-service # apigateway를 거쳐서 service를 실행시키면 user-service의 포트 번호에 영향을 받지 않음
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/**
         - id: first-service
           uri: lb://MY-FIRST-SERVICE #lb : load balancer, MY-FIRST-SERVICE : Discovery server에 등록되어 있는 이름
           predicates:
