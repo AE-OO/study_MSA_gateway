@@ -21,18 +21,42 @@ spring:
             preLogger: true
             postLogger: true
       routes:
-        - id: user-service # apigateway를 거쳐서 service를 실행시키면 user-service의 포트 번호에 영향을 받지 않음
+#        - id: user-service # apigateway를 거쳐서 service를 실행시키면 user-service의 포트 번호에 영향을 받지 않음
+#          uri: lb://USER-SERVICE
+#          predicates:
+#            - Path=/user-service/**
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/login
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>, *), /$\{segment} # /user-service/(?<segment>, *)와 같은 패턴으로 데이터가 들어오면 /$\{segment}와 같은 형태로 URI값을 바꾸겠다는 의미
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/users
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>, *), /$\{segment}
+        - id: user-service
           uri: lb://USER-SERVICE
           predicates:
             - Path=/user-service/**
-        - id: catalog-service
-          uri: lb://CATALOG-SERVICE
-          predicates:
-            - Path=/catalog-service/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>, *), /$\{segment}
         - id: order-service
           uri: lb://ORDER-SERVICE
           predicates:
             - Path=/order-service/**
+        - id: catalog-service
+          uri: lb://CATALOG-SERVICE
+          predicates:
+            - Path=/catalog-service/**
         - id: first-service
           uri: lb://MY-FIRST-SERVICE #lb : load balancer, MY-FIRST-SERVICE : Discovery server에 등록되어 있는 이름
           predicates:
