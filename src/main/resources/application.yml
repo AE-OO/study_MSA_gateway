@@ -28,7 +28,7 @@ spring:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user-service/login
+            - Path=/user-service/login # spring security가 제공해주는 api
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
