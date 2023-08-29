@@ -15,10 +15,11 @@ import reactor.core.publisher.Mono;
 
 @Component
 @Slf4j
-public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AbstractGatewayFilterFactory.Config> {
+public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
     Environment env;
 
     public AuthorizationHeaderFilter(Environment env) {
+        super(Config.class);
         this.env = env;
     }
 
@@ -32,7 +33,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Abst
      * token이 제대로 발급되었는지, 적절한 인증이 처리되어 있는지 등을 확인한 후 통과처리
      */
     @Override
-    public GatewayFilter apply(AbstractGatewayFilterFactory.Config config) {
+    public GatewayFilter apply(Config config) {
         return ((exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
 
