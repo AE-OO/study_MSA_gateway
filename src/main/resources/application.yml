@@ -32,7 +32,7 @@ spring:
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/user-service/(?<segment>, *), /$\{segment} # /user-service/(?<segment>, *)와 같은 패턴으로 데이터가 들어오면 /$\{segment}와 같은 형태로 URI값을 바꾸겠다는 의미
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment} # /user-service/(?<segment>.*)와 같은 패턴으로 데이터가 들어오면 /$\{segment}와 같은 형태로 URI값을 바꾸겠다는 의미
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
@@ -40,7 +40,7 @@ spring:
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/user-service/(?<segment>, *), /$\{segment}
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
@@ -48,7 +48,7 @@ spring:
             - Method=GET
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/user-service/(?<segment>, *), /$\{segment}
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
         - id: order-service
           uri: lb://ORDER-SERVICE
           predicates:
