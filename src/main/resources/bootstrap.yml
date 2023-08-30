@@ -5,3 +5,5 @@ spring:
       name: ecommerce
     application:
       name: APIGATEWAY-SERVICE
+  profiles:
+    active: dev
