@@ -11,6 +11,11 @@ eureka:
 spring:
   application:
     name: apigateway-service
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
   cloud:
     gateway:
       #default-filters의 내용은 Global filter를 위함
@@ -90,11 +95,15 @@ spring:
   config:
     import: classpath:/bootstrap.yml
 
+
 token:
   secret: user_token
+
+
 
 management:
   endpoints:
     web:
       exposure:
-        include: refresh, health, beans, httptrace
+        include: refresh, health, beans, httptrace, busrefresh
+
