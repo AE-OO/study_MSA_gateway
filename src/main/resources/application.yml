@@ -96,10 +96,8 @@ spring:
     import: classpath:/bootstrap.yml
 
 
-token:
-  secret: user_token
-
-
+#token:
+#  secret: user_token
 
 management:
   endpoints:
